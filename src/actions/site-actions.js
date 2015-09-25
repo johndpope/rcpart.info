@@ -5,19 +5,25 @@ class SiteActions {
     this.dispatch(user);
   }
 
-  navigateToPage(routeInfo) {
+  navigateToPage(routes, params) {
     let pageInfo = {};
-    pageInfo.page = routeInfo.routes[1].name;
+    if (routes[1].path === undefined) {
+      pageInfo.page = "/";
+    } else if (routes[1].path.startsWith("part")) {
+      pageInfo.page = "part";
+    } else if (routes[1].path.startsWith("UnknownManufacturer")) {
+      pageInfo.page = "unknown";
+    }
 
     if (pageInfo.page === "part") {
-      pageInfo.part = {"manufacturerID": routeInfo.params.manufacturer,
-                       "partId": routeInfo.params.part,
-                       "path": routeInfo.params.manufacturer + "/" + routeInfo.params.part};
-    } else if (pageInfo.page === "unknownManufacturer") {
+      pageInfo.part = {"manufacturerID": params.manufacturer,
+                       "partId": params.part,
+                       "path": params.manufacturer + "/" + params.part};
+    } else if (pageInfo.page == "unknown") {
       pageInfo.page = "part";
-      pageInfo.part = {"siteID": routeInfo.params.site,
-                       "partId": routeInfo.params.part,
-                       "path": "UnknownManufacturer/" + routeInfo.params.site + "/" + routeInfo.params.part};
+      pageInfo.part = {"siteID": params.site,
+                       "partId": params.part,
+                       "path": "UnknownManufacturer/" + params.site + "/" + params.part};
     }
     this.dispatch(pageInfo);
   }

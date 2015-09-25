@@ -20,6 +20,8 @@ class SiteStore {
     this.page = pageInfo.page;
     if (this.page == "part" || this.page == "unknownManufacturer") {
       this.activePart = pageInfo.part;
+    } else {
+      this.activePart = null;
     }
   }
 }

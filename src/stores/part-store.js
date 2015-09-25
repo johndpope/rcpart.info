@@ -38,9 +38,8 @@ class PartStore {
     if (page === "part") {
       this.getInstance().loadPart(SiteStore.getState().activePart.path);
     }
-    if (page === "editbuild" || page === "builds") {
-      this.getInstance().loadSupportedPartIndex();
-    }
+    this.getInstance().loadCategories();
+    this.getInstance().loadSupportedPartIndex();
   }
 
   static expandParts(parts) {
@@ -57,7 +56,7 @@ class PartStore {
     for (let manufacturerID of Object.keys(parts)) {
       for (let partID of Object.keys(parts[manufacturerID])) {
         let part = parts[manufacturerID][partID];
-        if (part.category !== "") {
+        if (part.categories.length > 0) {
           delete parts[manufacturerID][partID];
         }
       }

@@ -84,6 +84,12 @@ body {
   width: 100%;
 }
 
+@media screen and (min-width: 768px) {
+  .navbar .react-autosuggest input {
+    width: 382px;
+  }
+}
+
 .react-autosuggest input:focus, .typeahead input:focus {
   outline: none;
 }

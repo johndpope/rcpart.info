@@ -8,23 +8,18 @@ import SupportedParts from "./components/supported-parts";
 
 import SiteActions from "./actions/site-actions";
 
-import Router from "react-router";
-var Route = Router.Route;
-var DefaultRoute = Router.DefaultRoute;
-var Redirect = Router.Redirect;
+import ReactDOM from 'react-dom';
+import { Router, Route, IndexRoute } from 'react-router';
+import createBrowserHistory from 'history/lib/createBrowserHistory';
 
 var routes = (
-  <Route handler={RCPartInfo} name="home" path="/">
-    <DefaultRoute handler={HomePage}/>
-    <Route handler={PartPage} name="part" path="part/:manufacturer/:part" />
-    <Route handler={PartPage} name="unknownManufacturer" path="part/UnknownManufacturer/:site/:part" />
-    <Route handler={SupportedParts} name="supportedparts" path="parts/supported" />
-    <Route handler={AllParts} name="allparts" path="parts/all" />
+  <Route component={RCPartInfo} path="/">
+    <IndexRoute component={HomePage}/>
+    <Route component={PartPage} path="part/:manufacturer/:part" />
+    <Route component={PartPage} path="part/UnknownManufacturer/:site/:part" />
+    <Route component={SupportedParts} path="parts/supported" />
+    <Route component={AllParts} path="parts/all" />
   </Route>);
 
-Router.run(routes, Router.HistoryLocation, (Root, state) => {
-  React.render(<Root/>, document.body);
-  SiteActions.navigateToPage(state);
-  let pageview = {"page": state.path};
-  ga("send", "pageview", pageview);
-});
+let history = createBrowserHistory();
+ReactDOM.render(<Router history={history}>{routes}</Router>, document.getElementById("rcpart"));

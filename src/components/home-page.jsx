@@ -1,8 +1,6 @@
 import React from "react";
 
-import Jumbotron from "react-bootstrap/lib/Jumbotron";
-
-import ButtonLink from "react-router-bootstrap/lib/ButtonLink";
+import PartSearch from "./part-search";
 
 export default class HomePage extends React.Component {
   constructor() {
@@ -11,6 +9,12 @@ export default class HomePage extends React.Component {
   }
 
   render() {
-    return null;
+    return (<div>
+              <h2>Search for parts on RCPart.Info</h2>
+              <PartSearch history={this.props.history} />
+            </div>);
   }
+}
+HomePage.propTypes = {
+  history: React.PropTypes.object
 }

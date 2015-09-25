@@ -10,50 +10,49 @@ var CollapsibleNav = require("react-bootstrap/lib/CollapsibleNav");
 var Nav = require("react-bootstrap/lib/Nav");
 var NavItem = require("react-bootstrap/lib/NavItem");
 
-import Router from "react-router";
-var RouteHandler = Router.RouteHandler;
-var Link = Router.Link;
-
-import MenuItemLink from "react-router-bootstrap/lib/MenuItemLink";
-import NavItemLink from "react-router-bootstrap/lib/NavItemLink";
+import { Router, Link } from "react-router";
 
 import Cookies from "js-cookie";
 
 import SiteActions from "../actions/site-actions";
 import SiteStore from "../stores/site-store";
+import PartSearch from "./part-search";
 
 export default class RCPartInfo extends React.Component {
   constructor() {
     super();
     this.render = this.render.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
-    this.componentWillUnmount = this.componentWillUnmount.bind(this);
-    this.onSiteChange = this.onSiteChange.bind(this);
-    this.state = SiteStore.getState();
+    this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
+    this.lastPath = null;
   }
 
   componentDidMount() {
-    SiteStore.listen(this.onSiteChange);
+    this.componentWillReceiveProps(this.props);
   }
 
-  componentWillUnmount() {
-    SiteStore.unlisten(this.onSiteChange);
-  }
-
-  onSiteChange(state) {
-    this.setState(state);
+  componentWillReceiveProps(props) {
+    SiteActions.navigateToPage(props.routes, props.params);
+    let pageview = { "page": props.location.pathname };
+    ga("send", "pageview", pageview);
   }
 
   render() {
-    var logo = <Link to="home"><img src="/static/logo.svg"/></Link>;
+    var logo = <Link to="/"><img src="/static/logo.svg"/></Link>;
 
     return (
       <div id="appContainer">
-        <Navbar brand={logo}/>
+        <Navbar brand={logo}>
+          <Nav right>
+            <NavItem>
+              <PartSearch history={this.props.history} id="navSearch"/>
+            </NavItem>
+          </Nav>
+        </Navbar>
         <Grid>
           <Row>
             <Col xs={12}>
-              <RouteHandler/>
+              { this.props.children }
             </Col>
           </Row>
           <hr/>
@@ -66,4 +65,8 @@ export default class RCPartInfo extends React.Component {
       </div>
     );
   }
+}
+RCPartInfo.propTypes = {
+  children: React.PropTypes.node,
+  history: React.PropTypes.object
 }

@@ -22,7 +22,9 @@ export default class PartPage extends React.Component {
   }
 
   componentDidMount() {
+    this.onSiteChange(SiteStore.getState());
     SiteStore.listen(this.onSiteChange);
+    this.onPartChange(PartStore.getState());
     PartStore.listen(this.onPartChange);
   }
 
