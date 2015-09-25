@@ -56,8 +56,8 @@ def is_social_bot():
 def CloneOrPull():
   r = None
   if not os.path.isdir("parts-repo"):
-    #r = Repo.clone_from("https://github.com/rcbuild-info/parts.git", "parts-repo")
-    r = Repo.clone_from("/Users/tannewt/local-github/repos/rcbuild-info/parts", "parts-repo")
+    r = Repo.clone_from("https://github.com/rcbuild-info/parts.git", "parts-repo")
+    #r = Repo.clone_from("/Users/tannewt/local-github/repos/rcbuild-info/parts", "parts-repo")
   else:
     r = Repo("parts-repo")
   fetch_info = r.remote().pull()
