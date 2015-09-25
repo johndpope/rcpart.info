@@ -1,6 +1,10 @@
 import React from "react";
 
+import Button from "react-bootstrap/lib/Button";
+import Glyphicon from "react-bootstrap/lib/Glyphicon";
+import OverlayTrigger from "react-bootstrap/lib/OverlayTrigger";
 import Table from "react-bootstrap/lib/Table";
+import Tooltip from "react-bootstrap/lib/Tooltip";
 
 import PartStore from "../stores/part-store";
 import SiteStore from "../stores/site-store";
@@ -96,7 +100,7 @@ export default class PartPage extends React.Component {
       let url = "http://" + site;
       content.push((
         <tr key={site}>
-          <th colSpan={4}><a href={ url } onClick={ this.onClick.bind(this, url) }>{site}</a></th>
+          <th colSpan={5}><a href={ url } onClick={ this.onClick.bind(this, url) }>{site}</a></th>
         </tr>));
       for (let i = 0; i < variants_by_site[site].length; i++) {
         let variant = variants_by_site[site][i];
@@ -125,6 +129,13 @@ export default class PartPage extends React.Component {
         } else {
           stock = <span className="unknown">Unknown</span>;
         }
+        let timestamp;
+        if (variant.timestamp) {
+          let tooltip = <Tooltip id={ "timestamp-" + variant.url }>{ variant.timestamp }</Tooltip>;
+          timestamp = (<OverlayTrigger overlay={tooltip} placement="left" trigger="click"><Glyphicon glyph="time"/></OverlayTrigger>);
+        } else {
+          timestamp = (<span className="unknown"><Glyphicon glyph="time"/></span>);
+        }
         let callback = this.onClick.bind(this, url);
         content.push((
           <tr key={url}>
@@ -132,6 +143,7 @@ export default class PartPage extends React.Component {
             <td><a href={url} onClick={ callback }>{ quantity }</a></td>
             <td><a href={url} onClick={ callback }>{ price_per_unit }</a></td>
             <td><a href={url} onClick={ callback }>{ stock }</a></td>
+            <td className="crawl-timestamp">{timestamp}</td>
           </tr>));
       }
     }
@@ -142,6 +154,7 @@ export default class PartPage extends React.Component {
         <th>Quantity</th>
         <th>Price Per Unit</th>
         <th>Stock</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>

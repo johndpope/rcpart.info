@@ -8,3 +8,5 @@ venv
 node_modules
 out
 parts-repo
+static/js/
+static/css/

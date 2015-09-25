@@ -390,6 +390,11 @@ ul {
   text-decoration: none;
 }
 
+.table>tbody>tr>td.crawl-timestamp {
+  vertical-align: middle;
+  text-align: center;
+}
+
 /* from bootstrap */
 .collapse {
   display: none;
