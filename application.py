@@ -200,23 +200,27 @@ def part_helper(manufacturerID, partID):
     url = '/part/' + "/".join(LINKS[manufacturerID][partID]) + ".json"
     if not application.debug:
       url = urlparse.urljoin("https://rcpart.info", url)
-    return redirect(url)
+    return ('link', url)
   if manufacturerID in PARTS_BY_ID and partID in PARTS_BY_ID[manufacturerID]:
-    return PARTS_BY_ID[manufacturerID][partID]
+    return ('part', PARTS_BY_ID[manufacturerID][partID])
   return None
 
 @rcpart.route('/part/<manufacturerID>/<partID>.json')
 def part_json(manufacturerID, partID):
   part = part_helper(manufacturerID, partID)
   if part:
-    return json.dumps(part)
+    if part[0] == "link":
+      return redirect(part[1])
+    return json.dumps(part[1])
   abort(404)
 
 @rcpart.route('/part/UnknownManufacturer/<siteID>/<partID>.json')
 def unknown_part_json(siteID, partID):
   part = part_helper("UnknownManufacturer/" + siteID, partID)
   if part:
-    return json.dumps(part)
+    if part[0] == "link":
+      return redirect(part[1])
+    return json.dumps(part[1])
   abort(404)
 
 def updatePartCategoriesHelper():
@@ -260,6 +264,9 @@ def get_social_part_page(manufacturerID, partID):
   part = part_helper(manufacturerID, partID)
   if not part:
     abort(404)
+  if part[0] == "link":
+    return redirect(part[1])
+  part = part[1]
   url = "https://rcpart.info/part/" + manufacturerID + "/" + partID
   description = ""
   if "version" in part:
