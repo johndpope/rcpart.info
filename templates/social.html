@@ -4,19 +4,21 @@
     <title>{{ title }}</title>
     <meta charset="utf-8">
     <meta property="og:title" content="{{ title }}" />
-    <meta property="og:site_name" content="RCBuild.Info"/>
+    <meta property="og:site_name" content="RCPart.Info"/>
     <meta property="og:url" content="{{ url }}" />
     <meta property="og:description" content="{{ description }}" />
     <meta property="og:type" content="product" />
-    {% if image != None %}<meta property="og:image" content="{{ image }}" />{% endif %}
-    {% if video != None %}<meta property="og:video" content="{{ video }}" />
-    <meta property="og:video:type" content="text/html">{% endif %}
+    {% if availability != None %}<meta property="product:availability" content="{{ availability }}" />{% endif %}
+    {% if price != None %}<meta property="product:price:amount" content="{{ price }}" />
+    <meta property="product:price:currency" content="{{ currency }}" />{% endif %}
     <meta property="fb:admins" content="10719338" />
-    <meta property="fb:app_id" content="1623907041160044" />
+    <meta property="fb:app_id" content="1486228695005984" />
   </head>
   <body>
     <h1>{{ title }}</h1>
-    <p>{{ description }}</p>
+    <p>{{ description }}
+       {% if price != None %} - {{ price }} {{ currency }}{% endif %}
+       {% if availability != None %} - {{ availability }}{% endif %}</p>
     <img src="{{ image }}"/>
   </body>
 </html>

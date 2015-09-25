@@ -98,13 +98,13 @@ def updatePartIndexHelper():
         part = json.load(f)
         part["id"] = manufacturerID + "/" + partID
         small_part = {"manufacturer": part["manufacturer"],
-                      "name": part["name"],
-                      "categories": []}
+                      "name": part["name"]}
         categories = []
-        if "version" not in part:
-          categories = [part["category"]]
-        else:
+        if "version" in part:
           categories = part["categories"]
+        elif part["category"]:
+          categories = [part["category"]]
+        small_part["categories"] = categories
         for category in categories:
           if category not in new_small_parts_by_category:
             new_small_parts_by_category[category] = {}
@@ -202,16 +202,22 @@ def part_helper(manufacturerID, partID):
       url = urlparse.urljoin("https://rcpart.info", url)
     return redirect(url)
   if manufacturerID in PARTS_BY_ID and partID in PARTS_BY_ID[manufacturerID]:
-    return json.dumps(PARTS_BY_ID[manufacturerID][partID])
-  abort(404)
+    return PARTS_BY_ID[manufacturerID][partID]
+  return None
 
 @rcpart.route('/part/<manufacturerID>/<partID>.json')
 def part_json(manufacturerID, partID):
-  return part_helper(manufacturerID, partID)
+  part = part_helper(manufacturerID, partID)
+  if part:
+    return json.dumps(part)
+  abort(404)
 
 @rcpart.route('/part/UnknownManufacturer/<siteID>/<partID>.json')
 def unknown_part_json(siteID, partID):
-  return part_helper("UnknownManufacturer/" + siteID, partID)
+  part = part_helper("UnknownManufacturer/" + siteID, partID)
+  if part:
+    return json.dumps(part)
+  abort(404)
 
 def updatePartCategoriesHelper():
   global partCategories_string
@@ -250,12 +256,57 @@ def healthz():
 def index():
   return render_template('main.html')
 
+def get_social_part_page(manufacturerID, partID):
+  part = part_helper(manufacturerID, partID)
+  if not part:
+    abort(404)
+  url = "https://rcpart.info/part/" + manufacturerID + "/" + partID
+  description = ""
+  if "version" in part:
+    categories = [partCategories["categories"][x]["name"] for x in part["categories"]]
+    description = " ".join(categories)
+  elif part["category"]:
+    description = partCategories["categories"][part["category"]]["name"]
+  price = None
+  currency = None
+  availability = None
+  if "version" in part:
+    for variant in part["variants"]:
+      if "stock_state" in variant:
+        stock_state = variant["stock_state"]
+        if not availability and stock_state == "out_of_stock":
+          availability = "oos"
+        elif stock_state == "in_stock":
+          availability = "instock"
+        elif not availability or (availability != "instock" and stock_state == "backordered"):
+          availability = "pending"
+        if "price" in variant and stock_state != "out_of_stock":
+          p = variant["price"]
+          if p.startswith("$"):
+            p = float(p[1:])
+            if "quantity" in part:
+              p /= part["quantity"]
+            if not price or p < price:
+              price = p
+              currency = "USD"
+  return render_template('social.html',
+                         title=(part["manufacturer"] + " " + part["name"]),
+                         description=description,
+                         availability=availability,
+                         url=url,
+                         price=price,
+                         currency=currency)
+
 @rcpart.route('/part/<manufacturerID>/<partID>')
 def part(manufacturerID, partID):
+  if is_social_bot():
+    return get_social_part_page(manufacturerID, partID)
   return render_template('main.html')
 
 @rcpart.route('/part/UnknownManufacturer/<siteID>/<partID>')
 def unknown_part(siteID, partID):
+  if is_social_bot():
+    return get_social_part_page("UnknownManufacturer/" + siteID, partID)
   return render_template('main.html')
 
 updatePartCategoriesHelper()
