@@ -164,7 +164,7 @@ export default class PartPage extends React.Component {
       <tr>
         <th>Descripton</th>
         <th>Quantity</th>
-        <th>Price Per Unit</th>
+        <th>Total Price</th>
         <th>Stock</th>
         <th></th>
       </tr>
