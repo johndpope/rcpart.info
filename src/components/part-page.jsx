@@ -9,6 +9,10 @@ import Tooltip from "react-bootstrap/lib/Tooltip";
 import PartStore from "../stores/part-store";
 import SiteStore from "../stores/site-store";
 
+let STOCK_TEXT = {"in_stock": "In Stock",
+                  "backordered": "Backordered",
+                  "out_of_stock": "Out of Stock"}
+
 export default class PartPage extends React.Component {
   constructor() {
     super();
@@ -127,7 +131,13 @@ export default class PartPage extends React.Component {
         }
         let stock;
         if (variant.stock_state) {
-          stock = <span className={ variant.stock_state }>{variant.stock_text}</span>;
+          let stock_text;
+          if (variant.stock_text) {
+            stock_text = variant.stock_text;
+          } else {
+            stock_text = STOCK_TEXT[variant.stock_state];
+          }
+          stock = <span className={ variant.stock_state }>{stock_text}</span>;
         } else {
           stock = <span className="unknown">Unknown</span>;
         }
@@ -140,7 +150,7 @@ export default class PartPage extends React.Component {
         }
         let callback = this.onClick.bind(this, url);
         content.push((
-          <tr key={url}>
+          <tr key={ site + i }>
             <td><a href={url} onClick={ callback }>{ description }</a></td>
             <td><a href={url} onClick={ callback }>{ quantity }</a></td>
             <td><a href={url} onClick={ callback }>{ price_per_unit }</a></td>
