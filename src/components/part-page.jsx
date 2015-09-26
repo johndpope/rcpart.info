@@ -10,6 +10,7 @@ import PartStore from "../stores/part-store";
 import SiteStore from "../stores/site-store";
 
 let STOCK_TEXT = {"in_stock": "In Stock",
+                  "low_stock": "Low Stock",
                   "backordered": "Backordered",
                   "out_of_stock": "Out of Stock"}
 
