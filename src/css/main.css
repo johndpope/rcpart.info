@@ -388,7 +388,22 @@ ul {
 }
 
 .in_stock {
-    color: limegreen;
+    color: #15c500;
+    font-weight: bold;
+}
+
+.low_stock {
+    color: #00ff00;
+    font-weight: bold;
+}
+
+.backordered {
+    color: orange;
+    font-weight: bold;
+}
+
+.out_of_stock {
+    color: red;
     font-weight: bold;
 }
 
