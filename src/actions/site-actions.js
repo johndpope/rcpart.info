@@ -9,10 +9,10 @@ class SiteActions {
     let pageInfo = {};
     if (routes[1].path === undefined) {
       pageInfo.page = "/";
+    } else if (routes[1].path.startsWith("part/UnknownManufacturer")) {
+      pageInfo.page = "unknown";
     } else if (routes[1].path.startsWith("part")) {
       pageInfo.page = "part";
-    } else if (routes[1].path.startsWith("UnknownManufacturer")) {
-      pageInfo.page = "unknown";
     }
 
     if (pageInfo.page === "part") {
